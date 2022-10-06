@@ -1,0 +1,19 @@
+{
+  "name": "video-chat-server",
+  "version": "0.1.0",
+  "description": "Server for React video chat client",
+  "main": "server.js",
+  "repository": "https://github.com/somikdatta/video-chat-react-server.git",
+  "author": "Somik Datta <developersomik@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.1",
+    "socket.io": "^2.4.0",
+    "username-generator": "^1.1.0",
+    "nodemon": "^2.0.19",
+    "shortid": "^2.2.14"
+  },
+  "scripts": {
+    "server": "nodemon server.js"
+  }
+}
