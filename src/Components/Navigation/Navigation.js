@@ -16,7 +16,7 @@ const Navigation = () => {
                                     <img src={cuckoologo} alt="Cuckoo Logo"/>
                                 </div>
                                 <div className="logoText">
-                                    cuckoo
+                                    SR
                                 </div>
                             </div>
                         </a>

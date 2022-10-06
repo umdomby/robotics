@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef, Suspense } from 'react';
 import io from "socket.io-client";
 import Peer from "simple-peer";
-// import Rodal from 'rodal'
+import Rodal from 'rodal'
 import {Howl} from 'howler'
 
 import Navigation from './Components/Navigation/Navigation'
-import Footer from './Components/Footer/Footer'
+//import Footer from './Components/Footer/Footer'
 
-//import  'rodal/lib/rodal.css'
+import  'rodal/lib/rodal.css'
 
 import camera from './Icons/camera.svg'
 import camerastop from './Icons/camera-stop.svg'
@@ -475,16 +475,16 @@ function App() {
       <>
         <div style={{display: renderLanding()}}>
           {landingHTML}
-          {/*<Rodal */}
-          {/*  visible={modalVisible} */}
-          {/*  onClose={()=>setModalVisible(false)} */}
-          {/*  width={20} */}
-          {/*  height={5} */}
-          {/*  measure={'em'}*/}
-          {/*  closeOnEsc={true}*/}
-          {/*>*/}
-          {/*  <div>{modalMessage}</div>*/}
-          {/*</Rodal>*/}
+          <Rodal
+            visible={modalVisible}
+            onClose={()=>setModalVisible(false)}
+            width={20}
+            height={5}
+            measure={'em'}
+            closeOnEsc={true}
+          >
+            <div>{modalMessage}</div>
+          </Rodal>
           {incomingCall}
         </div>
         <div className="callContainer" style={{display: renderCall()}}>
