@@ -6,7 +6,7 @@ function Watermark(){
     return (
         <div className="watermark">
             <img className="logoImage" src={cuckoologo} alt="Cuckoo Logo"/>
-            <span className="logoText">cuckoo</span>
+            <span className="logoText">Service Robot</span>
         </div>
     )
 }

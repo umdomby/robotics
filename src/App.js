@@ -62,6 +62,16 @@ function App() {
         <div className="o-wrapper-l">
           <div className="hero flex flex-column">
             <div>
+              {
+                cameraDeviceId.map((camera, index) =>
+                    <div key={index}>
+                      {/*{camera.deviceId}*/}
+                      <button onClick={()=>switchCamera(camera.deviceId)}>{camera.label}</button>
+                      {/*{console.log(camerasRef.current)}*/}
+                    </div>)
+              }
+            </div>
+            <div>
               <input value={myId} onChange={e => setMyId(e.target.value)}/>
               <button onClick={()=> {
                 localStorage.setItem('myId', myId)
@@ -80,15 +90,15 @@ function App() {
 
               <button onClick={() => callPeer(receiverID.toLowerCase().trim())} className="primaryButton">Call</button>
             </div>
-            <div>
-              To call your friend, ask them to open Cuckoo in their browser. <br/>
-              Send your username (<span className="username">{yourID}</span>) and wait for their call <span style={{fontWeight: 600}}>OR</span> enter their username and hit call!
-            </div>
+            {/*<div>*/}
+            {/*  To call your friend, ask them to open Cuckoo in their browser. <br/>*/}
+            {/*  Send your username (<span className="username">{yourID}</span>) and wait for their call <span style={{fontWeight: 600}}>OR</span> enter their username and hit call!*/}
+            {/*</div>*/}
           </div>
         </div>
       </div>
     </main>
-    <Footer/>
+    {/*<Footer/>*/}
   </>
 
   const startSocket = () => {
@@ -122,7 +132,7 @@ function App() {
   async function getConnectedDevices(type) {
     const devices = await navigator.mediaDevices.enumerateDevices();
     //console.log('devices')
-    //console.log(devices)
+    console.log(devices)
     return devices.filter(device => device.kind === type)
   }
 
@@ -495,17 +505,6 @@ function App() {
             {hangUp}
           </div>
         </div>
-
-
-        {
-          //console.log(cameraDeviceId)
-          cameraDeviceId.map((camera, index) =>
-              <div key={index}>
-                {/*{camera.deviceId}*/}
-                <button onClick={()=>switchCamera(camera.deviceId)}>{camera.deviceId}</button>
-                {/*{console.log(camerasRef.current)}*/}
-              </div>)
-        }
       </>
   )
 }
