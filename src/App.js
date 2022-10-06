@@ -37,7 +37,7 @@ function App() {
   const [callerSignal, setCallerSignal] = useState();
   const [callAccepted, setCallAccepted] = useState(false);
   const [callRejected, setCallRejected] = useState(false);
-  const [receiverID, setReceiverID] = useState('')
+  const [receiverID, setReceiverID] = useState(localStorage.getItem('receiverID') || '')
   const [modalVisible, setModalVisible] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
   const [audioMuted, setAudioMuted] = useState(false)
@@ -53,6 +53,8 @@ function App() {
   const myPeer=useRef();
   const camerasRef=useRef('');
 
+  const [myId, setMyId] = useState(localStorage.getItem('myId') || '')
+
   let landingHTML=<>
     <Navigation/>
     <main>
@@ -60,18 +62,22 @@ function App() {
         <div className="o-wrapper-l">
           <div className="hero flex flex-column">
             <div>
-              <div className="welcomeText">
-                Anonymous Video Calls
-              </div>
-              <div className="descriptionText">
-                across the world for free
-              </div>
+              <input value={myId} onChange={e => setMyId(e.target.value)}/>
+              <button onClick={()=> {
+                localStorage.setItem('myId', myId)
+                startSocket()
+              }}>CONNECT</button>
             </div>
             <div>
               <div className="actionText">Who do you want to call, <span className={copied?"username highlight copied":"username highlight"} onClick={()=>{showCopiedMessage()}}>{yourID}</span>?</div>
             </div>
             <div className="callBox flex">
-              <input type="text" placeholder="Friend ID" value={receiverID} onChange={e => setReceiverID(e.target.value)} className="form-input"/>
+              {/*<input type="text" placeholder="Friend ID" value={receiverID} onChange={e => setReceiverID(e.target.value)} className="form-input"/>*/}
+              <input type="text" value={receiverID} onChange={e => {
+                setReceiverID(e.target.value)
+                localStorage.setItem('receiverID', e.target.value)
+              }} className="form-input"/>
+
               <button onClick={() => callPeer(receiverID.toLowerCase().trim())} className="primaryButton">Call</button>
             </div>
             <div>
@@ -85,23 +91,32 @@ function App() {
     <Footer/>
   </>
 
+  const startSocket = () => {
+    if(myId !== '') {
+      socket.current = io.connect("https://servicerobot.pro:4433");
+      socket.current.emit("myId", {myId: myId})
+
+      socket.current.on("yourID", (id) => {
+        console.log(id)
+        setYourID(id);
+      })
+
+      socket.current.on("allUsers", (users) => {
+        setUsers(users);
+      })
+
+      socket.current.on("hey", (data) => {
+        setReceivingCall(true);
+        ringtoneSound.play();
+        setCaller(data.from);
+        setCallerSignal(data.signal);
+      })
+    }
+  }
+
   useEffect(() => {
     console.log('1111')
-    socket.current = io.connect("https://servicerobot.pro:4433");
-    socket.current.on("yourID", (id) => {
-      console.log(id)
-      setYourID(id);
-    })
-    socket.current.on("allUsers", (users) => {
-      setUsers(users);
-    })
-
-    socket.current.on("hey", (data) => {
-      setReceivingCall(true);
-      ringtoneSound.play();
-      setCaller(data.from);
-      setCallerSignal(data.signal);
-    })
+    startSocket()
   }, []);
 
   async function getConnectedDevices(type) {
