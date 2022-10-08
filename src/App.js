@@ -117,15 +117,15 @@ function App() {
 
       socket.current.on("hey", (data) => {
         setReceivingCall(true);
-        ringtoneSound.play();
+        //ringtoneSound.play();
         setCaller(data.from);
         setCallerSignal(data.signal);
+        //acceptCall()
       })
     }
   }
 
   useEffect(() => {
-    console.log('1111')
     startSocket()
   }, []);
 
@@ -137,24 +137,17 @@ function App() {
   }
 
   useEffect( () => {
-    //getConnectedDevices('videoinput').then(cameras => camerasRef.current = cameras);
-
     getConnectedDevices('videoinput').then(cameras => setCameraDeviceId(cameras));
-
-    // setTimeout(()=>{
-    //   setCameraDeviceId(camerasRef.current)
-    //   // console.log(camerasRef.current)
-    //   // setCameraDeviceId(oldArray => [...oldArray, newElement]);
-    //   // for(let i = 0; i < camerasRef.current.length; i++){
-    //   //   setCameraDeviceId()
-    //   // }
-    //   //console.log(cameraDeviceId)
-    // }, [1000])
-
   }, [])
 
-  function callPeer(id) {
+  useEffect(()=> {
+    if (receivingCall && !callAccepted && !callRejected) {
+      console.log('allerSignal useEffect')
+      acceptCall()
+    }
+  },[callerSignal])
 
+  function callPeer(id) {
     var mediaParams = {
       audio: true,
       video: camerasRef.current === '' ? {deviceId : true} : {deviceId : camerasRef.current},
@@ -476,12 +469,12 @@ function App() {
         <div style={{display: renderLanding()}}>
           {landingHTML}
           <Rodal
-            visible={modalVisible}
-            onClose={()=>setModalVisible(false)}
-            width={20}
-            height={5}
-            measure={'em'}
-            closeOnEsc={true}
+              visible={modalVisible}
+              onClose={()=>setModalVisible(false)}
+              width={20}
+              height={5}
+              measure={'em'}
+              closeOnEsc={true}
           >
             <div>{modalMessage}</div>
           </Rodal>

@@ -40,28 +40,22 @@ const io = socket(httpsServer)
 // })
 
 const users={}
-function randomIntFromInterval(min, max) { // min and max included
-    return Math.floor(Math.random() * (max - min + 1) + min)
-}
 
 io.on('connection', socket => {
+    //generate username against a socket connection and store it
 
-    socket.on('myId', (data) => {
-        // const userid = randomIntFromInterval(1000, 9999)
-        const userid = data.myId
-        console.log(userid)
+    const userid=username.generateUsername('-')
 
-        if(!users[userid]){
-            users[userid] = socket.id
-        }
+    if(!users[userid]){
+        users[userid] = socket.id
+    }
+    //send back username
+    console.log(users)
+    socket.emit('yourID', userid)
+    io.sockets.emit('allUsers', users)
 
-        socket.emit('yourID', userid)
-        console.log(users)
-
-        io.sockets.emit('allUsers', users)
-        socket.on('disconnect', ()=>{
-            delete users[userid]
-        })
+    socket.on('disconnect', ()=>{
+        delete users[userid]
     })
 
     socket.on('callUser', (data)=>{
@@ -73,44 +67,12 @@ io.on('connection', socket => {
     })
 
     socket.on('close', (data)=>{
-        console.log('CLOSED')
         io.to(users[data.to]).emit('close')
     })
 
     socket.on('rejected', (data)=>{
         io.to(users[data.to]).emit('rejected')
     })
-
-    // setTimeout(()=>{
-    //     if(!users[userid]){
-    //         users[userid] = socket.id
-    //     }
-    //
-    //     socket.emit('yourID', userid)
-    //     console.log(users)
-    //
-    //     io.sockets.emit('allUsers', users)
-    //     socket.on('disconnect', ()=>{
-    //         delete users[userid]
-    //     })
-    //
-    //     socket.on('callUser', (data)=>{
-    //         io.to(users[data.userToCall]).emit('hey', {signal: data.signalData, from: data.from})
-    //     })
-    //
-    //     socket.on('acceptCall', (data)=>{
-    //         io.to(users[data.to]).emit('callAccepted', data.signal)
-    //     })
-    //
-    //     socket.on('close', (data)=>{
-    //         io.to(users[data.to]).emit('close')
-    //     })
-    //
-    //     socket.on('rejected', (data)=>{
-    //         io.to(users[data.to]).emit('rejected')
-    //     })
-    // }, 1000)
-
 })
 
 // const port = process.env.PORT || 8000
@@ -119,6 +81,6 @@ io.on('connection', socket => {
 //     console.log(`Server running on port ${port}`)
 // })
 
-httpsServer.listen(4433, () => {
-    console.log('HTTPS Server running on port 4433');
+httpsServer.listen(4444, () => {
+    console.log('HTTPS Server running on port 4444');
 });
